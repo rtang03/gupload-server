@@ -1,13 +1,21 @@
 syntax = "proto3";
 
-option go_package = "github.com/rtang03/grpc-server/api";
+option go_package = "github.com/rtang03/grpc-server/core";
 
 service GuploadService {
   rpc Upload(stream Chunk) returns (UploadStatus) {}
 }
 
 message Chunk {
-  bytes Content = 1;
+  oneof data {
+    bytes Content = 1;
+    UploadFileInfo info = 2;
+  }
+}
+
+message UploadFileInfo {
+  string fileId = 1;
+  string fileType = 2;
 }
 
 enum UploadStatusCode {

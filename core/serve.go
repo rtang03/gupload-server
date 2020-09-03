@@ -1,11 +1,11 @@
-package cmd
+package core
 
 import (
-	"github.com/rtang03/grpc-server/core"
+	"fmt"
 	"github.com/urfave/cli/v2"
 )
 
-var Serve = cli.Command{
+var ServeCommand = cli.Command{
 	Name:   "serve",
 	Usage:  "initiates a gRPC server",
 	Action: serveAction,
@@ -31,20 +31,21 @@ func serveAction(c *cli.Context) (err error) {
 		port        = c.Int("port")
 		key         = c.String("key")
 		certificate = c.String("certificate")
-		server      core.Server
+		server      Server
 	)
+	fileStore := NewDiskStore("uploaded")
 
-	grpcServer, err := core.NewServerGRPC(core.ServerGRPCConfig{
+	grpcServer, err := NewServerGRPC(ServerGRPCConfig{
 		Port:        port,
 		Certificate: certificate,
 		Key:         key,
-	})
+	}, fileStore)
 	must(err)
 	server = &grpcServer
 
+	fmt.Printf("🚀 Gupload server listen at: %d\n", port)
 	err = server.Listen()
 	must(err)
 	defer server.Close()
-
 	return
 }

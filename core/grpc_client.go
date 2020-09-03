@@ -1,7 +1,6 @@
 package core
 
 import (
-	"github.com/rtang03/grpc-server/api"
 	"io"
 	"os"
 	"time"
@@ -23,15 +22,20 @@ type Client interface {
 type ClientGRPC struct {
 	logger    zerolog.Logger
 	conn      *grpc.ClientConn
-	client    api.GuploadServiceClient
+	client    GuploadServiceClient
 	chunkSize int
+	filename  string
+	mspid     string
 }
 
 type ClientGRPCConfig struct {
-	Address         string
-	ChunkSize       int
-	RootCertificate string
-	Compress        bool
+	Address            string
+	ChunkSize          int
+	RootCertificate    string
+	Compress           bool
+	ServerNameOverride string
+	Filename           string
+	Mspid              string
 }
 
 func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
@@ -39,6 +43,8 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 		grpcOpts  []grpc.DialOption
 		grpcCreds credentials.TransportCredentials
 	)
+	c.mspid = cfg.Mspid
+	c.filename = cfg.Filename
 
 	if cfg.Address == "" {
 		err = errors.Errorf("address must be specified")
@@ -50,7 +56,7 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 	}
 
 	if cfg.RootCertificate != "" {
-		grpcCreds, err = credentials.NewClientTLSFromFile(cfg.RootCertificate, "localhost")
+		grpcCreds, err = credentials.NewClientTLSFromFile(cfg.RootCertificate, cfg.ServerNameOverride)
 		if err != nil {
 			err = errors.Wrapf(err, "failed create grpc tls client via root-cert %s", cfg.RootCertificate)
 			return
@@ -80,7 +86,7 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 		return
 	}
 
-	c.client = api.NewGuploadServiceClient(c.conn)
+	c.client = NewGuploadServiceClient(c.conn)
 
 	return
 }
@@ -91,7 +97,7 @@ func (c *ClientGRPC) UploadFile(ctx context.Context, f string) (stats Stats, err
 		buf     []byte
 		n       int
 		file    *os.File
-		status  *api.UploadStatus
+		status  *UploadStatus
 	)
 
 	file, err = os.Open(f)
@@ -109,6 +115,24 @@ func (c *ClientGRPC) UploadFile(ctx context.Context, f string) (stats Stats, err
 	defer stream.CloseSend()
 
 	stats.StartedAt = time.Now()
+
+	// file info
+	req := &Chunk{
+		Data: &Chunk_Info{
+			Info: &UploadFileInfo{
+				FileId:   c.filename,
+				FileType: c.mspid,
+			},
+		},
+	}
+
+	err = stream.Send(req)
+	if err != nil {
+		err = errors.Wrapf(err, "error send file header")
+		return
+	}
+
+	// binary data
 	buf = make([]byte, c.chunkSize)
 	for writing {
 		n, err = file.Read(buf)
@@ -122,8 +146,10 @@ func (c *ClientGRPC) UploadFile(ctx context.Context, f string) (stats Stats, err
 			return
 		}
 
-		err = stream.Send(&api.Chunk{
-			Content: buf[:n],
+		err = stream.Send(&Chunk{
+			Data: &Chunk_Content{
+				Content: buf[:n],
+			},
 		})
 		if err != nil {
 			err = errors.Wrapf(err, "failed to send chunk via stream")
@@ -139,7 +165,7 @@ func (c *ClientGRPC) UploadFile(ctx context.Context, f string) (stats Stats, err
 		return
 	}
 
-	if status.Code != api.UploadStatusCode_Ok {
+	if status.Code != UploadStatusCode_Ok {
 		err = errors.Errorf("upload filed - msg: %s", status.Message)
 		return
 	}
