@@ -5,7 +5,7 @@ https://gitlab.com/pantomath-io/demo-grpc
 https://medium.com/pantomath/how-we-use-grpc-to-build-a-client-server-system-in-go-dd20045fa1c2
 
 protoc --proto_path=src --go_out=src --go_opt=paths=source_relative  src/api.proto
-protoc --proto_path=api --go_out=plugins=grpc:api --go_opt=paths=source_relative  api/api.proto
+protoc --proto_path=api --go_out=plugins=grpc:api --go_opt=paths=source_relative api/service.proto
 
 ```shell script
 go mod init github.com/rtang03/grpc-server/client
