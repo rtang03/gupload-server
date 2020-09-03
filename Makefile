@@ -2,8 +2,8 @@ SERVER_OUT := "server.bin"
 CLIENT_OUT := "client.bin"
 API_OUT := "api/api.pb.go"
 PKG := "github.com/rtang03/grpc-server"
-SERVER_PKG_BUILD := "${PKG}/core/grpc_server"
-CLIENT_PKG_BUILD := "${PKG}/core/grpc_client"
+SERVER_PKG_BUILD := "${PKG}/core/grpc_server.go"
+CLIENT_PKG_BUILD := "${PKG}/core/grpc_client.go"
 PKG_LIST := $(shell go list ${PKG}/... | grep -v /vendor/)
 
 .PHONY: all api build_server build_client
@@ -22,10 +22,7 @@ dep: ## Get the dependencies
 	@go get -v -d ./...
 
 build_server: dep api ## Build the binary file for server
-	@go build -i -v -o $(SERVER_OUT) $(SERVER_PKG_BUILD)
-
-build_client: dep api ## Build the binary file for client
-	@go build -i -v -o $(CLIENT_OUT) $(CLIENT_PKG_BUILD)
+	@go build -i -v -o $(SERVER_OUT) main
 
 clean: ## Remove previous builds
 	@rm $(SERVER_OUT) $(CLIENT_OUT) $(API_OUT)
