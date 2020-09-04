@@ -102,4 +102,9 @@ protoc --proto_path=core --go_out=plugins=grpc:core --go_opt=paths=source_relati
 
 # compile
 go build -i -v -o build/gupload main.go
+
+# to trigger the docker image creation and send to Github Container Registry
+git tag v0.0.2
+
+git push origin v0.0.2
 ```

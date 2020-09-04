@@ -14,11 +14,11 @@ FROM alpine:3.12 AS final
 
 WORKDIR /var/gupload
 
-VOLUME /var/gupload/uploaded
+VOLUME /var/gupload/uploaded /var/gupload/cert
 
 COPY --from=builder /workspace/build/gupload .
 COPY --from=builder /workspace/README.md .
-COPY --from=builder /workspace/cert .
+COPY --from=builder /workspace/cert ./cert
 
-CMD ["sh", "-c", "sleep 48h"]
+CMD ["sh", "-c", "./gupload serve --key ./cert/server.key --certificate ./cert/server.crt"]
 
