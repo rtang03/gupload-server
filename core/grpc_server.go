@@ -138,7 +138,7 @@ END:
 		err = errors.Wrapf(err, "failed to send status code")
 		return
 	}
-	log.Printf("file saved: %s--%s", fileId, fileType)
+	log.Printf("file saved: %s--%s", fileType, fileId)
 	return
 }
 

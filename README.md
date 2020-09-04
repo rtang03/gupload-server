@@ -72,7 +72,7 @@ gupload upload \
         --file main.go \
         --label org2msp \
         --filename main.go \
-        --address 127.0.0.1:1313
+        --address localhost:1313
 ```
 The uploaded filename will be placed at /uploaded directory; its filename will be `org2msp--main.go`. Label can
 be used as organization identifier, or usages e.g. config files.
