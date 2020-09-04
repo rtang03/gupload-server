@@ -14,7 +14,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: dashslab/gupload
+  IMAGE_NAME: gupload
 
 jobs:
   # Run tests.

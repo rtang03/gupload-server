@@ -17,7 +17,8 @@ WORKDIR /var/gupload
 VOLUME /var/gupload/uploaded
 
 COPY --from=builder /workspace/build/gupload .
+COPY --from=builder /workspace/README.md .
 COPY --from=builder /workspace/cert .
 
-CMD ["sh", "-c", "/var/gupload --help"]
+CMD ["sh", "-c", "sleep 48h"]
 
