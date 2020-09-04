@@ -31,7 +31,7 @@ func NewDiskStore(folder string) *DiskStore {
 }
 
 func (store *DiskStore) Save(fileId string, fileType string, binaryData bytes.Buffer) (string, error) {
-	filePath := fmt.Sprintf("%s/%s/%s", store.folder, fileType, fileId)
+	filePath := fmt.Sprintf("%s/%s--%s", store.folder, fileType, fileId)
 
 	file, err := os.Create(filePath)
 	if err != nil {

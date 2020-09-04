@@ -10,7 +10,7 @@ import (
 func main() {
 	app := &cli.App{
 		Name:  "gupload",
-		Usage: "upload files",
+		Usage: "gprc upload files",
 		Commands: []*cli.Command{
 			&core.ServeCommand,
 			&core.UploadCommand,

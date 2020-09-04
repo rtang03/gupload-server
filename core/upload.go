@@ -44,8 +44,8 @@ var UploadCommand = cli.Command{
 			Usage: "filename after upload",
 		},
 		&cli.StringFlag{
-			Name:  "mspid",
-			Usage: "your organization MspId, e.g. org100",
+			Name:  "label",
+			Usage: "label can be considered your organization id, e.g. org100",
 		},
 	},
 }
@@ -59,7 +59,7 @@ func uploadAction(c *cli.Context) (err error) {
 		compress           = c.Bool("compress")
 		serverNameOverride = c.String("servername-override")
 		filename           = c.String("filename")
-		mspid              = c.String("mspid")
+		mspid              = c.String("label")
 		client             Client
 	)
 
@@ -87,7 +87,7 @@ func uploadAction(c *cli.Context) (err error) {
 	must(err)
 	defer client.Close()
 
-	fmt.Printf("⏱ Time duration (nano-seconds): %d\n", stat.FinishedAt.Sub(stat.StartedAt).Nanoseconds())
+	fmt.Printf("⏱  Time duration (nano-seconds): %d\n", stat.FinishedAt.Sub(stat.StartedAt).Nanoseconds())
 
 	return
 }

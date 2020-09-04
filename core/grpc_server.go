@@ -97,7 +97,7 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 	}
 	fileId := req.GetInfo().GetFileId()
 	fileType := req.GetInfo().GetFileType()
-	log.Printf("receive an upload request for fileId %s with type %s", fileId, fileType)
+	log.Printf("receive an upload request for fileId '%s' with type '%s'", fileId, fileType)
 
 	data := bytes.Buffer{}
 	filesize := 0
@@ -142,7 +142,7 @@ END:
 		err = errors.Wrapf(err, "failed to send status code")
 		return
 	}
-	s.logger.Info().Msg("file saved: " + fileId)
+	log.Printf("file saved: %s--%s", fileId, fileType)
 	return
 }
 
