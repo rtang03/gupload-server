@@ -7,11 +7,9 @@ import (
 	"io"
 	"log"
 	"net"
-	"os"
 	"strconv"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
@@ -28,7 +26,6 @@ type Server interface {
 
 type ServerGRPC struct {
 	fileStore   FileStore
-	logger      zerolog.Logger
 	server      *grpc.Server
 	port        int
 	certificate string
@@ -42,7 +39,6 @@ type ServerGRPCConfig struct {
 }
 
 func NewServerGRPC(cfg ServerGRPCConfig, fileStore FileStore) (s ServerGRPC, err error) {
-	s.logger = zerolog.New(os.Stdout).With().Str("from", "server").Logger()
 
 	if cfg.Port == 0 {
 		err = errors.Errorf("Port must be specified")

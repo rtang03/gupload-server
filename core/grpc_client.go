@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -20,7 +19,6 @@ type Client interface {
 }
 
 type ClientGRPC struct {
-	logger    zerolog.Logger
 	conn      *grpc.ClientConn
 	client    GuploadServiceClient
 	chunkSize int
@@ -77,8 +75,6 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 	default:
 		c.chunkSize = cfg.ChunkSize
 	}
-
-	c.logger = zerolog.New(os.Stdout).With().Str("from", "client").Logger()
 
 	c.conn, err = grpc.Dial(cfg.Address, grpcOpts...)
 	if err != nil {

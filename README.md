@@ -6,13 +6,6 @@ This small utility setup server/cli: "upload-only" ftp-like server; with TLS + g
 - [Protocol buffer compiler](https://grpc.io/docs/languages/go/quickstart/)
 - [Golang editor](https://jaxenter.com/top-5-ides-go-146348.html)
 
-```shell script
-# generate protocol buffers
-protoc --proto_path=core --go_out=plugins=grpc:core --go_opt=paths=source_relative core/service.proto
-
-# compile
-go build -i -v -o build/gupload main.go
-```
 ### Instructions
 ```text
 NAME:
@@ -102,3 +95,11 @@ The tool is adapted from:
 - [example 2](https://medium.com/pantomath/how-we-use-grpc-to-build-a-client-server-system-in-go-dd20045fa1c2)
 - [publish to gh registry](https://github.com/actions/starter-workflows/blob/main/ci/docker-publish.yml)
 
+### Development
+```shell script
+# generate protocol buffers
+protoc --proto_path=core --go_out=plugins=grpc:core --go_opt=paths=source_relative core/service.proto
+
+# compile
+go build -i -v -o build/gupload main.go
+```
