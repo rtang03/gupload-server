@@ -56,8 +56,8 @@ To use tls-based connections:
 ```
 # Create a server
 gupload serve \
-        --key ./cert/server.key \
-        --certificate ./cert/server.crt
+        --key ./cert/tls.key \
+        --certificate ./cert/tls.crt
 
 
 # When doing local development with above cert/key pair;
@@ -68,7 +68,7 @@ export GODEBUG=x509ignoreCN=0
 
 # Upload a file: with mandatory fields
 gupload upload \
-        --cacert ./cert/server.crt \
+        --cacert ./cert/tls.crt \
         --file main.go \
         --label org2msp \
         --filename main.go \

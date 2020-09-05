@@ -20,5 +20,5 @@ COPY --from=builder /workspace/build/gupload .
 COPY --from=builder /workspace/README.md .
 COPY --from=builder /workspace/cert ./cert
 
-CMD ["sh", "-c", "./gupload serve --key ./cert/server.key --certificate ./cert/server.crt"]
+CMD ["sh", "-c", "./gupload serve --key ./cert/tls.key --certificate ./cert/tls.crt"]
 
