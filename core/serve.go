@@ -7,7 +7,7 @@ import (
 
 var ServeCommand = cli.Command{
 	Name:   "serve",
-	Usage:  "initiates a gRPC server",
+	Usage:  "initiates a gRPC upload server (max 4MB per file)",
 	Action: serveAction,
 	Flags: []cli.Flag{
 		&cli.IntFlag{

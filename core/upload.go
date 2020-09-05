@@ -10,7 +10,7 @@ import (
 
 var UploadCommand = cli.Command{
 	Name:   "upload",
-	Usage:  "upload a file",
+	Usage:  "upload a file (max 4MB per file)",
 	Action: uploadAction,
 	Flags: []cli.Flag{
 		&cli.StringFlag{

@@ -111,7 +111,8 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 		}
 		chunk := req.GetContent()
 		size := len(chunk)
-		log.Printf("received a chunk with size: %d", size)
+		log.Print("‣")
+		// log.Printf("received a chunk with size: %d", size)
 
 		filesize += size
 		if filesize > maxFileSize {
