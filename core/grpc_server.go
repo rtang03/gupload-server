@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"io"
@@ -16,8 +17,8 @@ import (
 	_ "google.golang.org/grpc/encoding/gzip"
 )
 
-// 2M
-const maxFileSize = 1 << 21
+// 4M
+const maxFileSize = 1 << 22
 
 type Server interface {
 	Listen() (err error)
@@ -103,7 +104,8 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 
 		if err != nil {
 			if err == io.EOF {
-				goto END
+				log.Println("no more data")
+				break
 			}
 
 			err = errors.Wrapf(err, "failed unexpectedly while reading chunks from stream")
@@ -111,8 +113,7 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 		}
 		chunk := req.GetContent()
 		size := len(chunk)
-		log.Print("‣")
-		// log.Printf("received a chunk with size: %d", size)
+		fmt.Print("‣")
 
 		filesize += size
 		if filesize > maxFileSize {
@@ -125,7 +126,6 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 		}
 	}
 
-END:
 	_, err = s.fileStore.Save(fileId, fileType, data)
 	if err != nil {
 		return logError(status.Errorf(codes.Internal, "cannot save file: %v", err))

@@ -87,7 +87,7 @@ func uploadAction(c *cli.Context) (err error) {
 	must(err)
 	defer client.Close()
 
-	fmt.Printf("⏱  Time duration (nano-seconds): %d\n", stat.FinishedAt.Sub(stat.StartedAt).Nanoseconds())
+	fmt.Printf("⏱  Time duration (ms): %d\n", stat.FinishedAt.Sub(stat.StartedAt).Milliseconds())
 
 	return
 }

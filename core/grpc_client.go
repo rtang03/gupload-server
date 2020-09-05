@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"time"
@@ -95,6 +96,18 @@ func (c *ClientGRPC) UploadFile(ctx context.Context, f string) (stats Stats, err
 		file    *os.File
 		status  *UploadStatus
 	)
+
+	fi, err := os.Stat(f)
+	if err != nil {
+		err = errors.Wrapf(err, "failed to find file %s", f)
+		return
+	}
+
+	if fi.Size() > maxFileSize {
+		fmt.Println("Too big file size to send (max 4MB)")
+		err = errors.Wrapf(err, "too big file size to send (max 4M)")
+		return
+	}
 
 	file, err = os.Open(f)
 	if err != nil {
