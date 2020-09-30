@@ -8,6 +8,8 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/pkg/errors"
@@ -19,6 +21,7 @@ import (
 
 // 4M
 const maxFileSize = 1 << 22
+const filesDir = "fileserver/download"
 
 type Server interface {
 	Listen() (err error)
@@ -87,10 +90,48 @@ func (s *ServerGRPC) Listen() (err error) {
 	return
 }
 
+func (s *ServerGRPC) Download(request *FileRequest, stream GuploadService_DownloadServer) error {
+	fileName := request.GetFileName()
+	path := filepath.Join(filesDir, fileName)
+
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	fileSize := fileInfo.Size()
+
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	var totalBytesStreamed int64
+
+	for totalBytesStreamed < fileSize {
+		shard := make([]byte, 1024)
+		bytesRead, err := f.Read(shard)
+		if err == io.EOF {
+			log.Print("download complete")
+			break
+		}
+		if err != nil {
+			return err
+		}
+		if err := stream.Send(&FileResponse{
+			Shard: shard,
+		}); err != nil {
+			return err
+		}
+		totalBytesStreamed += int64(bytesRead)
+	}
+	return nil
+}
+
 func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 	req, err := stream.Recv()
 	if err != nil {
-		return logError(status.Errorf(codes.Unknown, "cannot receive image info"))
+		return logError(status.Errorf(codes.Unknown, "cannot receive file info"))
 	}
 	fileId := req.GetInfo().GetFileId()
 	fileType := req.GetInfo().GetFileType()
@@ -133,7 +174,7 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 
 	err = stream.SendAndClose(&UploadStatus{
 		Message: "Upload received with success",
-		Code:    UploadStatusCode_Ok,
+		Code:    StatusCode_Ok,
 	})
 	if err != nil {
 		err = errors.Wrapf(err, "failed to send status code")

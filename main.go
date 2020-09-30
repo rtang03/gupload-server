@@ -18,10 +18,11 @@ import (
 func main() {
 	app := &cli.App{
 		Name:  "gupload",
-		Usage: "gprc upload files",
+		Usage: "gprc upload and download files",
 		Commands: []*cli.Command{
 			&core.ServeCommand,
 			&core.UploadCommand,
+			&core.DownloadCommand,
 		},
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
@@ -31,5 +32,5 @@ func main() {
 		},
 	}
 
-	app.Run(os.Args)
+	_ = app.Run(os.Args)
 }

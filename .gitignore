@@ -15,6 +15,6 @@
 # vendor/
 .idea/
 build/gupload
-uploaded/
+fileserver/
 cert/p0o1.crt
 cert/nginx.crt

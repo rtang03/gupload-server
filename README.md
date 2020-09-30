@@ -53,12 +53,9 @@ gupload --file ./main.go
 
 To use tls-based connections:
 
-```
+```shell script
 # Create a server
-gupload serve \
-        --key ./cert/tls.key \
-        --certificate ./cert/tls.crt
-
+./build/gupload serve --key ./cert/tls.key --certificate ./cert/tls.crt
 
 # When doing local development with above cert/key pair;
 # see this issue https://github.com/golang/go/issues/39568
@@ -67,12 +64,12 @@ gupload serve \
 export GODEBUG=x509ignoreCN=0
 
 # Upload a file: with mandatory fields
-gupload upload \
-        --cacert ./cert/tls.crt \
-        --file main.go \
-        --label org2msp \
-        --filename main.go \
-        --address localhost:1313
+./build/gupload upload \
+    --cacert ./cert/tls.crt \
+    --file main.go \
+    --label org2msp \
+    --filename main.go \
+    --address localhost:1313
 ```
 The uploaded filename will be placed at /uploaded directory; its filename will be `org2msp--main.go`. Label can
 be used as organization identifier, or usages e.g. config files.
@@ -80,6 +77,14 @@ be used as organization identifier, or usages e.g. config files.
 The default address is `localhost:1313`.
 
 Also, can use `--servername-override`, when TLS is enabled.
+
+```shell script
+./build/gupload download \
+    --cacert ./cert/tls.crt \
+    --file client.go \
+    --address localhost:1313 \
+    --label org1
+```
 
 ### Credits
 The tool is adapted from:

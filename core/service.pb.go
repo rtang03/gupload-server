@@ -29,52 +29,52 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-type UploadStatusCode int32
+type StatusCode int32
 
 const (
-	UploadStatusCode_Unknown UploadStatusCode = 0
-	UploadStatusCode_Ok      UploadStatusCode = 1
-	UploadStatusCode_Failed  UploadStatusCode = 2
+	StatusCode_Unknown StatusCode = 0
+	StatusCode_Ok      StatusCode = 1
+	StatusCode_Failed  StatusCode = 2
 )
 
-// Enum value maps for UploadStatusCode.
+// Enum value maps for StatusCode.
 var (
-	UploadStatusCode_name = map[int32]string{
+	StatusCode_name = map[int32]string{
 		0: "Unknown",
 		1: "Ok",
 		2: "Failed",
 	}
-	UploadStatusCode_value = map[string]int32{
+	StatusCode_value = map[string]int32{
 		"Unknown": 0,
 		"Ok":      1,
 		"Failed":  2,
 	}
 )
 
-func (x UploadStatusCode) Enum() *UploadStatusCode {
-	p := new(UploadStatusCode)
+func (x StatusCode) Enum() *StatusCode {
+	p := new(StatusCode)
 	*p = x
 	return p
 }
 
-func (x UploadStatusCode) String() string {
+func (x StatusCode) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (UploadStatusCode) Descriptor() protoreflect.EnumDescriptor {
+func (StatusCode) Descriptor() protoreflect.EnumDescriptor {
 	return file_service_proto_enumTypes[0].Descriptor()
 }
 
-func (UploadStatusCode) Type() protoreflect.EnumType {
+func (StatusCode) Type() protoreflect.EnumType {
 	return &file_service_proto_enumTypes[0]
 }
 
-func (x UploadStatusCode) Number() protoreflect.EnumNumber {
+func (x StatusCode) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use UploadStatusCode.Descriptor instead.
-func (UploadStatusCode) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use StatusCode.Descriptor instead.
+func (StatusCode) EnumDescriptor() ([]byte, []int) {
 	return file_service_proto_rawDescGZIP(), []int{0}
 }
 
@@ -158,6 +158,157 @@ func (*Chunk_Content) isChunk_Data() {}
 
 func (*Chunk_Info) isChunk_Data() {}
 
+// Download
+type Filter struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	MspId    string `protobuf:"bytes,1,opt,name=mspId,proto3" json:"mspId,omitempty"`
+	FileType string `protobuf:"bytes,2,opt,name=fileType,proto3" json:"fileType,omitempty"`
+}
+
+func (x *Filter) Reset() {
+	*x = Filter{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Filter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Filter) ProtoMessage() {}
+
+func (x *Filter) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Filter.ProtoReflect.Descriptor instead.
+func (*Filter) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Filter) GetMspId() string {
+	if x != nil {
+		return x.MspId
+	}
+	return ""
+}
+
+func (x *Filter) GetFileType() string {
+	if x != nil {
+		return x.FileType
+	}
+	return ""
+}
+
+type FileRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FileName string `protobuf:"bytes,1,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+}
+
+func (x *FileRequest) Reset() {
+	*x = FileRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FileRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FileRequest) ProtoMessage() {}
+
+func (x *FileRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FileRequest.ProtoReflect.Descriptor instead.
+func (*FileRequest) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *FileRequest) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+type FileResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Shard []byte `protobuf:"bytes,1,opt,name=shard,proto3" json:"shard,omitempty"`
+}
+
+func (x *FileResponse) Reset() {
+	*x = FileResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FileResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FileResponse) ProtoMessage() {}
+
+func (x *FileResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FileResponse.ProtoReflect.Descriptor instead.
+func (*FileResponse) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *FileResponse) GetShard() []byte {
+	if x != nil {
+		return x.Shard
+	}
+	return nil
+}
+
+// Upload
 type UploadFileInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -170,7 +321,7 @@ type UploadFileInfo struct {
 func (x *UploadFileInfo) Reset() {
 	*x = UploadFileInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[1]
+		mi := &file_service_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -183,7 +334,7 @@ func (x *UploadFileInfo) String() string {
 func (*UploadFileInfo) ProtoMessage() {}
 
 func (x *UploadFileInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[1]
+	mi := &file_service_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -196,7 +347,7 @@ func (x *UploadFileInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadFileInfo.ProtoReflect.Descriptor instead.
 func (*UploadFileInfo) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{1}
+	return file_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UploadFileInfo) GetFileId() string {
@@ -218,14 +369,14 @@ type UploadStatus struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Message string           `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
-	Code    UploadStatusCode `protobuf:"varint,2,opt,name=Code,proto3,enum=UploadStatusCode" json:"Code,omitempty"`
+	Message string     `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
+	Code    StatusCode `protobuf:"varint,2,opt,name=Code,proto3,enum=StatusCode" json:"Code,omitempty"`
 }
 
 func (x *UploadStatus) Reset() {
 	*x = UploadStatus{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[2]
+		mi := &file_service_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -238,7 +389,7 @@ func (x *UploadStatus) String() string {
 func (*UploadStatus) ProtoMessage() {}
 
 func (x *UploadStatus) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[2]
+	mi := &file_service_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -251,7 +402,7 @@ func (x *UploadStatus) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadStatus.ProtoReflect.Descriptor instead.
 func (*UploadStatus) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{2}
+	return file_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *UploadStatus) GetMessage() string {
@@ -261,11 +412,11 @@ func (x *UploadStatus) GetMessage() string {
 	return ""
 }
 
-func (x *UploadStatus) GetCode() UploadStatusCode {
+func (x *UploadStatus) GetCode() StatusCode {
 	if x != nil {
 		return x.Code
 	}
-	return UploadStatusCode_Unknown
+	return StatusCode_Unknown
 }
 
 var File_service_proto protoreflect.FileDescriptor
@@ -277,26 +428,37 @@ var file_service_proto_rawDesc = []byte{
 	0x74, 0x65, 0x6e, 0x74, 0x12, 0x25, 0x0a, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x18, 0x02, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x46, 0x69, 0x6c, 0x65, 0x49,
 	0x6e, 0x66, 0x6f, 0x48, 0x00, 0x52, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x42, 0x06, 0x0a, 0x04, 0x64,
-	0x61, 0x74, 0x61, 0x22, 0x44, 0x0a, 0x0e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x46, 0x69, 0x6c,
-	0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x1a, 0x0a,
-	0x08, 0x66, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x66, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x22, 0x4f, 0x0a, 0x0c, 0x55, 0x70, 0x6c,
-	0x6f, 0x61, 0x64, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x4d, 0x65, 0x73,
-	0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x4d, 0x65, 0x73, 0x73,
-	0x61, 0x67, 0x65, 0x12, 0x25, 0x0a, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x0e, 0x32, 0x11, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73,
-	0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x2a, 0x33, 0x0a, 0x10, 0x55, 0x70,
-	0x6c, 0x6f, 0x61, 0x64, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x0b,
-	0x0a, 0x07, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x10, 0x00, 0x12, 0x06, 0x0a, 0x02, 0x4f,
-	0x6b, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x46, 0x61, 0x69, 0x6c, 0x65, 0x64, 0x10, 0x02, 0x32,
-	0x35, 0x0a, 0x0e, 0x47, 0x75, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x12, 0x23, 0x0a, 0x06, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x06, 0x2e, 0x43, 0x68,
-	0x75, 0x6e, 0x6b, 0x1a, 0x0d, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x53, 0x74, 0x61, 0x74,
-	0x75, 0x73, 0x22, 0x00, 0x28, 0x01, 0x42, 0x25, 0x5a, 0x23, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x72, 0x74, 0x61, 0x6e, 0x67, 0x30, 0x33, 0x2f, 0x67, 0x72, 0x70,
-	0x63, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x74, 0x61, 0x22, 0x3a, 0x0a, 0x06, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x12, 0x14, 0x0a,
+	0x05, 0x6d, 0x73, 0x70, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6d, 0x73,
+	0x70, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x22,
+	0x2a, 0x0a, 0x0b, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b,
+	0x0a, 0x09, 0x66, 0x69, 0x6c, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x24, 0x0a, 0x0c, 0x46,
+	0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x73,
+	0x68, 0x61, 0x72, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x05, 0x73, 0x68, 0x61, 0x72,
+	0x64, 0x22, 0x44, 0x0a, 0x0e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x46, 0x69, 0x6c, 0x65, 0x49,
+	0x6e, 0x66, 0x6f, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x66,
+	0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66,
+	0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x22, 0x49, 0x0a, 0x0c, 0x55, 0x70, 0x6c, 0x6f, 0x61,
+	0x64, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x4d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x12, 0x1f, 0x0a, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x0b, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x43, 0x6f,
+	0x64, 0x65, 0x2a, 0x2d, 0x0a, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65,
+	0x12, 0x0b, 0x0a, 0x07, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x10, 0x00, 0x12, 0x06, 0x0a,
+	0x02, 0x4f, 0x6b, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x46, 0x61, 0x69, 0x6c, 0x65, 0x64, 0x10,
+	0x02, 0x32, 0x62, 0x0a, 0x0e, 0x47, 0x75, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x53, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x12, 0x23, 0x0a, 0x06, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x06, 0x2e,
+	0x43, 0x68, 0x75, 0x6e, 0x6b, 0x1a, 0x0d, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x53, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x22, 0x00, 0x28, 0x01, 0x12, 0x2b, 0x0a, 0x08, 0x44, 0x6f, 0x77, 0x6e,
+	0x6c, 0x6f, 0x61, 0x64, 0x12, 0x0c, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x0d, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x30, 0x01, 0x42, 0x25, 0x5a, 0x23, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
+	0x63, 0x6f, 0x6d, 0x2f, 0x72, 0x74, 0x61, 0x6e, 0x67, 0x30, 0x33, 0x2f, 0x67, 0x72, 0x70, 0x63,
+	0x2d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -312,20 +474,25 @@ func file_service_proto_rawDescGZIP() []byte {
 }
 
 var file_service_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_service_proto_goTypes = []interface{}{
-	(UploadStatusCode)(0),  // 0: UploadStatusCode
+	(StatusCode)(0),        // 0: StatusCode
 	(*Chunk)(nil),          // 1: Chunk
-	(*UploadFileInfo)(nil), // 2: UploadFileInfo
-	(*UploadStatus)(nil),   // 3: UploadStatus
+	(*Filter)(nil),         // 2: Filter
+	(*FileRequest)(nil),    // 3: FileRequest
+	(*FileResponse)(nil),   // 4: FileResponse
+	(*UploadFileInfo)(nil), // 5: UploadFileInfo
+	(*UploadStatus)(nil),   // 6: UploadStatus
 }
 var file_service_proto_depIdxs = []int32{
-	2, // 0: Chunk.info:type_name -> UploadFileInfo
-	0, // 1: UploadStatus.Code:type_name -> UploadStatusCode
+	5, // 0: Chunk.info:type_name -> UploadFileInfo
+	0, // 1: UploadStatus.Code:type_name -> StatusCode
 	1, // 2: GuploadService.Upload:input_type -> Chunk
-	3, // 3: GuploadService.Upload:output_type -> UploadStatus
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
+	3, // 3: GuploadService.Download:input_type -> FileRequest
+	6, // 4: GuploadService.Upload:output_type -> UploadStatus
+	4, // 5: GuploadService.Download:output_type -> FileResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -350,7 +517,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UploadFileInfo); i {
+			switch v := v.(*Filter); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -362,6 +529,42 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FileRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FileResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UploadFileInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UploadStatus); i {
 			case 0:
 				return &v.state
@@ -384,7 +587,7 @@ func file_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_service_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -412,6 +615,7 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type GuploadServiceClient interface {
 	Upload(ctx context.Context, opts ...grpc.CallOption) (GuploadService_UploadClient, error)
+	Download(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (GuploadService_DownloadClient, error)
 }
 
 type guploadServiceClient struct {
@@ -456,9 +660,42 @@ func (x *guploadServiceUploadClient) CloseAndRecv() (*UploadStatus, error) {
 	return m, nil
 }
 
+func (c *guploadServiceClient) Download(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (GuploadService_DownloadClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_GuploadService_serviceDesc.Streams[1], "/GuploadService/Download", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &guploadServiceDownloadClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type GuploadService_DownloadClient interface {
+	Recv() (*FileResponse, error)
+	grpc.ClientStream
+}
+
+type guploadServiceDownloadClient struct {
+	grpc.ClientStream
+}
+
+func (x *guploadServiceDownloadClient) Recv() (*FileResponse, error) {
+	m := new(FileResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // GuploadServiceServer is the server API for GuploadService service.
 type GuploadServiceServer interface {
 	Upload(GuploadService_UploadServer) error
+	Download(*FileRequest, GuploadService_DownloadServer) error
 }
 
 // UnimplementedGuploadServiceServer can be embedded to have forward compatible implementations.
@@ -467,6 +704,9 @@ type UnimplementedGuploadServiceServer struct {
 
 func (*UnimplementedGuploadServiceServer) Upload(GuploadService_UploadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Upload not implemented")
+}
+func (*UnimplementedGuploadServiceServer) Download(*FileRequest, GuploadService_DownloadServer) error {
+	return status.Errorf(codes.Unimplemented, "method Download not implemented")
 }
 
 func RegisterGuploadServiceServer(s *grpc.Server, srv GuploadServiceServer) {
@@ -499,6 +739,27 @@ func (x *guploadServiceUploadServer) Recv() (*Chunk, error) {
 	return m, nil
 }
 
+func _GuploadService_Download_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(FileRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(GuploadServiceServer).Download(m, &guploadServiceDownloadServer{stream})
+}
+
+type GuploadService_DownloadServer interface {
+	Send(*FileResponse) error
+	grpc.ServerStream
+}
+
+type guploadServiceDownloadServer struct {
+	grpc.ServerStream
+}
+
+func (x *guploadServiceDownloadServer) Send(m *FileResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 var _GuploadService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "GuploadService",
 	HandlerType: (*GuploadServiceServer)(nil),
@@ -508,6 +769,11 @@ var _GuploadService_serviceDesc = grpc.ServiceDesc{
 			StreamName:    "Upload",
 			Handler:       _GuploadService_Upload_Handler,
 			ClientStreams: true,
+		},
+		{
+			StreamName:    "Download",
+			Handler:       _GuploadService_Download_Handler,
+			ServerStreams: true,
 		},
 	},
 	Metadata: "service.proto",

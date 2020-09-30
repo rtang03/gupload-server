@@ -1,11 +1,15 @@
 package core
 
 import (
+	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -16,6 +20,7 @@ import (
 
 type Client interface {
 	UploadFile(ctx context.Context, f string) (stats Stats, err error)
+	DownloadFile(f string) (err error)
 	Close()
 }
 
@@ -63,7 +68,10 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 
 		grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(grpcCreds))
 	} else {
-		grpcOpts = append(grpcOpts, grpc.WithInsecure())
+		err = errors.Errorf("non-ssl operation is not suported")
+		return
+		// disable non-ssl
+		// grpcOpts = append(grpcOpts, grpc.WithInsecure())
 	}
 
 	switch {
@@ -71,7 +79,7 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 		err = errors.Errorf("ChunkSize must be specified")
 		return
 	case cfg.ChunkSize > (1 << 22):
-		err = errors.Errorf("ChunkSize must be < than 4MB")
+		err = errors.Errorf("ChunkSize must be < than 4k")
 		return
 	default:
 		c.chunkSize = cfg.ChunkSize
@@ -174,15 +182,51 @@ func (c *ClientGRPC) UploadFile(ctx context.Context, f string) (stats Stats, err
 		return
 	}
 
-	if status.Code != UploadStatusCode_Ok {
+	if status.Code != StatusCode_Ok {
 		err = errors.Errorf("upload filed - msg: %s", status.Message)
 		return
 	}
 	return
 }
 
+func (c *ClientGRPC) DownloadFile(fileName string) (err error) {
+	req := &FileRequest{
+		FileName: fileName,
+	}
+	stream, err := c.client.Download(context.Background(), req)
+	if err != nil {
+		return err
+	}
+
+	var downloaded int64
+	var buffer bytes.Buffer
+
+	for {
+		res, err := stream.Recv()
+		if err == io.EOF {
+			if err := ioutil.WriteFile(fileName, buffer.Bytes(), 0777); err != nil {
+				return err
+			}
+			break
+		}
+		if err != nil {
+			buffer.Reset()
+			return err
+		}
+		shard := res.GetShard()
+		shardSize := len(shard)
+		downloaded += int64(shardSize)
+
+		buffer.Write(shard)
+		fmt.Printf("\r%s", strings.Repeat(" ", 25))
+		fmt.Printf("\r%s downloaded", humanize.Bytes(uint64(downloaded)))
+	}
+
+	return nil
+}
+
 func (c *ClientGRPC) Close() {
 	if c.conn != nil {
-		c.conn.Close()
+		_ = c.conn.Close()
 	}
 }

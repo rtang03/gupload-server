@@ -3,7 +3,8 @@ syntax = "proto3";
 option go_package = "github.com/rtang03/grpc-server/core";
 
 service GuploadService {
-  rpc Upload(stream Chunk) returns (UploadStatus) {}
+  rpc Upload(stream Chunk) returns (UploadStatus) {};
+  rpc Download(FileRequest) returns (stream FileResponse) {};
 }
 
 message Chunk {
@@ -13,12 +14,27 @@ message Chunk {
   }
 }
 
+// Download
+message Filter {
+  string mspId = 1;
+  string fileType =2;
+}
+
+message FileRequest {
+  string file_name = 1;
+}
+
+message FileResponse {
+  bytes shard = 1;
+}
+
+// Upload
 message UploadFileInfo {
   string fileId = 1;
   string fileType = 2;
 }
 
-enum UploadStatusCode {
+enum StatusCode {
   Unknown = 0;
   Ok = 1;
   Failed = 2;
@@ -26,5 +42,5 @@ enum UploadStatusCode {
 
 message UploadStatus {
   string Message = 1;
-  UploadStatusCode Code = 2;
+  StatusCode Code = 2;
 }
