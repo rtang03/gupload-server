@@ -33,7 +33,7 @@ func serveAction(c *cli.Context) (err error) {
 		certificate = c.String("certificate")
 		server      Server
 	)
-	fileStore := NewDiskStore("uploaded")
+	fileStore := NewDiskStore("fileserver")
 
 	grpcServer, err := NewServerGRPC(ServerGRPCConfig{
 		Port:        port,

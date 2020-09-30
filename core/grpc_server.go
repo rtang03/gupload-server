@@ -8,6 +8,8 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/pkg/errors"
@@ -19,6 +21,11 @@ import (
 
 // 4M
 const maxFileSize = 1 << 22
+
+// 4096
+// upload location: fileserver
+// download location: fileserver/public
+const filesDir = "fileserver/public"
 
 type Server interface {
 	Listen() (err error)
@@ -87,12 +94,56 @@ func (s *ServerGRPC) Listen() (err error) {
 	return
 }
 
+func (s *ServerGRPC) Download(request *FileRequest, stream GuploadService_DownloadServer) error {
+	var shard []byte
+	fileName := request.GetFilename()
+	path := filepath.Join(filesDir, fileName)
+
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	fileSize := fileInfo.Size()
+
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	var totalBytesStreamed int64
+
+	for totalBytesStreamed < fileSize {
+		bytesleft := fileSize - totalBytesStreamed
+		if bytesleft < 1024 {
+			shard = make([]byte, bytesleft)
+		} else {
+			shard = make([]byte, 1024)
+		}
+		bytesRead, err := f.Read(shard)
+		if err == io.EOF {
+			log.Print("download complete")
+			break
+		}
+		if err != nil {
+			return err
+		}
+		if err := stream.Send(&FileResponse{
+			Shard: shard,
+		}); err != nil {
+			return err
+		}
+		totalBytesStreamed += int64(bytesRead)
+	}
+	return nil
+}
+
 func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 	req, err := stream.Recv()
 	if err != nil {
-		return logError(status.Errorf(codes.Unknown, "cannot receive image info"))
+		return logError(status.Errorf(codes.Unknown, "cannot receive file info"))
 	}
-	fileId := req.GetInfo().GetFileId()
+	fileId := req.GetInfo().GetFilename()
 	fileType := req.GetInfo().GetFileType()
 	log.Printf("receive an upload request for fileId '%s' with type '%s'", fileId, fileType)
 
@@ -133,7 +184,7 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 
 	err = stream.SendAndClose(&UploadStatus{
 		Message: "Upload received with success",
-		Code:    UploadStatusCode_Ok,
+		Code:    StatusCode_Ok,
 	})
 	if err != nil {
 		err = errors.Wrapf(err, "failed to send status code")
