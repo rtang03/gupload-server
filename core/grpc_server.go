@@ -21,7 +21,11 @@ import (
 
 // 4M
 const maxFileSize = 1 << 22
-const filesDir = "fileserver/download"
+
+// 4096
+// upload location: fileserver
+// download location: fileserver/public
+const filesDir = "fileserver/public"
 
 type Server interface {
 	Listen() (err error)
@@ -91,7 +95,8 @@ func (s *ServerGRPC) Listen() (err error) {
 }
 
 func (s *ServerGRPC) Download(request *FileRequest, stream GuploadService_DownloadServer) error {
-	fileName := request.GetFileName()
+	var shard []byte
+	fileName := request.GetFilename()
 	path := filepath.Join(filesDir, fileName)
 
 	fileInfo, err := os.Stat(path)
@@ -109,7 +114,12 @@ func (s *ServerGRPC) Download(request *FileRequest, stream GuploadService_Downlo
 	var totalBytesStreamed int64
 
 	for totalBytesStreamed < fileSize {
-		shard := make([]byte, 1024)
+		bytesleft := fileSize - totalBytesStreamed
+		if bytesleft < 1024 {
+			shard = make([]byte, bytesleft)
+		} else {
+			shard = make([]byte, 1024)
+		}
 		bytesRead, err := f.Read(shard)
 		if err == io.EOF {
 			log.Print("download complete")
@@ -133,7 +143,7 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 	if err != nil {
 		return logError(status.Errorf(codes.Unknown, "cannot receive file info"))
 	}
-	fileId := req.GetInfo().GetFileId()
+	fileId := req.GetInfo().GetFilename()
 	fileType := req.GetInfo().GetFileType()
 	log.Printf("receive an upload request for fileId '%s' with type '%s'", fileId, fileType)
 

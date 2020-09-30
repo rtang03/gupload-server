@@ -34,7 +34,6 @@ type ClientGRPC struct {
 
 type ClientGRPCConfig struct {
 	Address            string
-	ChunkSize          int
 	RootCertificate    string
 	Compress           bool
 	ServerNameOverride string
@@ -47,6 +46,8 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 		grpcOpts  []grpc.DialOption
 		grpcCreds credentials.TransportCredentials
 	)
+	// 4096 fixed
+	c.chunkSize = 1 << 12
 	c.mspid = cfg.Mspid
 	c.filename = cfg.Filename
 
@@ -70,19 +71,6 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 	} else {
 		err = errors.Errorf("non-ssl operation is not suported")
 		return
-		// disable non-ssl
-		// grpcOpts = append(grpcOpts, grpc.WithInsecure())
-	}
-
-	switch {
-	case cfg.ChunkSize == 0:
-		err = errors.Errorf("ChunkSize must be specified")
-		return
-	case cfg.ChunkSize > (1 << 22):
-		err = errors.Errorf("ChunkSize must be < than 4k")
-		return
-	default:
-		c.chunkSize = cfg.ChunkSize
 	}
 
 	c.conn, err = grpc.Dial(cfg.Address, grpcOpts...)
@@ -137,7 +125,7 @@ func (c *ClientGRPC) UploadFile(ctx context.Context, f string) (stats Stats, err
 	req := &Chunk{
 		Data: &Chunk_Info{
 			Info: &UploadFileInfo{
-				FileId:   c.filename,
+				Filename: c.filename,
 				FileType: c.mspid,
 			},
 		},
@@ -191,7 +179,7 @@ func (c *ClientGRPC) UploadFile(ctx context.Context, f string) (stats Stats, err
 
 func (c *ClientGRPC) DownloadFile(fileName string) (err error) {
 	req := &FileRequest{
-		FileName: fileName,
+		Filename: fileName,
 	}
 	stream, err := c.client.Download(context.Background(), req)
 	if err != nil {

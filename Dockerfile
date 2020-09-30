@@ -8,13 +8,14 @@ WORKDIR /workspace
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -v -i -o build/gupload main.go
+RUN cat $VERSION > VERSION.txt \
+  CGO_ENABLED=0 GOOS=linux go build -v -i -o build/gupload main.go
 
 FROM alpine:3.12 AS final
 
 WORKDIR /var/gupload
 
-VOLUME /var/gupload/uploaded /var/gupload/cert
+VOLUME /var/gupload/fileserver/public /var/gupload/cert
 
 COPY --from=builder /workspace/build/gupload .
 COPY --from=builder /workspace/README.md .

@@ -17,47 +17,36 @@ var UploadCommand = cli.Command{
 			Value: "localhost:1313",
 			Usage: "address of the server to connect to",
 		},
-		&cli.IntFlag{
-			Name:  "chunk-size",
-			Usage: "size of chunk messages (grpc only)",
-			Value: 1 << 12,
-		},
 		&cli.StringFlag{
-			Name:  "file",
-			Usage: "file to upload",
+			Name:  "infile",
+			Usage: "local filename to upload",
 		},
 		&cli.StringFlag{
 			Name:  "cacert",
 			Usage: "path of a certifcate to add to the root CAs",
-		},
-		&cli.BoolFlag{
-			Name:  "compress",
-			Usage: "whether or not to enable payload compression",
 		},
 		&cli.StringFlag{
 			Name:  "servername-override",
 			Usage: "use serverNameOverride for tls ca cert",
 		},
 		&cli.StringFlag{
-			Name:  "filename",
-			Usage: "filename after upload",
+			Name:  "outfile",
+			Usage: "output filename after upload",
 		},
 		&cli.StringFlag{
 			Name:  "label",
-			Usage: "label can be considered your organization id, e.g. org100",
+			Usage: "add mspId in form of label, e.g. org1msp",
 		},
 	},
 }
 
 func uploadAction(c *cli.Context) (err error) {
 	var (
-		chunkSize          = c.Int("chunk-size")
 		address            = c.String("address")
-		file               = c.String("file")
+		infile             = c.String("infile")
 		rootCertificate    = c.String("cacert")
-		compress           = c.Bool("compress")
 		serverNameOverride = c.String("servername-override")
-		filename           = c.String("filename")
+		outfile            = c.String("outfile")
 		mspid              = c.String("label")
 		client             Client
 	)
@@ -66,8 +55,8 @@ func uploadAction(c *cli.Context) (err error) {
 		must(errors.New("address"))
 	}
 
-	if file == "" {
-		must(errors.New("file must be set"))
+	if infile == "" {
+		must(errors.New("infile must be set"))
 	}
 
 	if rootCertificate == "" {
@@ -81,16 +70,15 @@ func uploadAction(c *cli.Context) (err error) {
 	grpcClient, err := NewClientGRPC(ClientGRPCConfig{
 		Address:            address,
 		RootCertificate:    rootCertificate,
-		Compress:           compress,
-		ChunkSize:          chunkSize,
+		Compress:           true,
 		ServerNameOverride: serverNameOverride,
-		Filename:           filename,
+		Filename:           outfile,
 		Mspid:              mspid,
 	})
 	must(err)
 	client = &grpcClient
 
-	stat, err := client.UploadFile(context.Background(), file)
+	stat, err := client.UploadFile(context.Background(), infile)
 	must(err)
 	defer client.Close()
 

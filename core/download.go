@@ -17,7 +17,7 @@ var DownloadCommand = cli.Command{
 		},
 		&cli.StringFlag{
 			Name:  "file",
-			Usage: "file to download",
+			Usage: "filename to download",
 		},
 		&cli.StringFlag{
 			Name:  "cacert",
@@ -26,10 +26,6 @@ var DownloadCommand = cli.Command{
 		&cli.StringFlag{
 			Name:  "servername-override",
 			Usage: "use serverNameOverride for tls ca cert",
-		},
-		&cli.StringFlag{
-			Name:  "label",
-			Usage: "label can be considered your organization id, e.g. org100",
 		},
 	},
 }
@@ -40,7 +36,6 @@ func downloadAction(c *cli.Context) (err error) {
 		file               = c.String("file")
 		rootCertificate    = c.String("cacert")
 		serverNameOverride = c.String("servername-override")
-		mspid              = c.String("label")
 		client             Client
 	)
 
@@ -56,17 +51,12 @@ func downloadAction(c *cli.Context) (err error) {
 		must(errors.New("cacert must be set"))
 	}
 
-	if mspid == "" {
-		must(errors.New("label must be set"))
-	}
-
 	grpcClient, err := NewClientGRPC(ClientGRPCConfig{
 		Address:            address,
 		RootCertificate:    rootCertificate,
 		ServerNameOverride: serverNameOverride,
 		Filename:           file,
-		Mspid:              mspid,
-		ChunkSize:          1 << 12,
+		Mspid:              "",
 	})
 	must(err)
 	client = &grpcClient

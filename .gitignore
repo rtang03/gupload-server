@@ -15,6 +15,7 @@
 # vendor/
 .idea/
 build/gupload
-fileserver/
 cert/p0o1.crt
 cert/nginx.crt
+# for testing
+fileserver/public/image.png
