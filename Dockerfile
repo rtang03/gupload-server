@@ -9,7 +9,7 @@ WORKDIR /workspace
 COPY . .
 
 RUN cat $VERSION > VERSION.txt \
-  CGO_ENABLED=0 GOOS=linux go build -v -i -o build/gupload main.go
+  && CGO_ENABLED=0 GOOS=linux go build -v -i -o build/gupload main.go
 
 FROM alpine:3.12 AS final
 
