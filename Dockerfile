@@ -11,6 +11,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -v -i -o build/gupload main.go
 
 FROM alpine:3.12 AS final
+ENV VERSION=$VERSION
 
 WORKDIR /var/gupload
 
@@ -19,7 +20,7 @@ VOLUME /var/gupload/fileserver/public /var/gupload/cert
 COPY --from=builder /workspace/build/gupload .
 COPY --from=builder /workspace/README.md .
 COPY --from=builder /workspace/cert ./cert
-RUN cat $VERSION > ./VERSION.txt
+RUN echo "VERSION: $VERSION" && cat $VERSION > ./VERSION.txt
 
 CMD ["sh", "-c", "./gupload serve --key ./cert/tls.key --certificate ./cert/tls.crt"]
 
