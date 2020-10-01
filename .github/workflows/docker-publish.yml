@@ -31,7 +31,11 @@ jobs:
             docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
           else
-            export VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+            echo $VERSION
+            [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+            [ "$VERSION" == "$default-branch" ] && VERSION=latest
+            echo $VERSION
             docker build --build-arg VERSION=$VERSION --file Dockerfile .
           fi
   # Push image to GitHub Packages.
