@@ -1,6 +1,12 @@
 ## Overview
 This small utility setup server/cli: "upload-only" ftp-like server; with TLS + grpc transport.
 
+### Motivation
+When doing multi-cloud deployment of Hyperledger Fabric, peers of different organizations run on different cloud providers.
+It needs a mechanism to share tls root certs, and/or crypto material, as an out-of-band communication process. This utility
+is created as Pod, besides "peer" pod. It enables the out-of-band file exchange process uses the same networking transport
+of inter-peer communications. A max filesize is 4 MB. TLS is required for SNI-based routing.
+
 ### Pre-requisite
 - Go v1.15 +
 - [Protocol buffer compiler](https://grpc.io/docs/languages/go/quickstart/)
@@ -16,7 +22,6 @@ USAGE:
 
 VERSION:
    0.0.0
-
 
 COMMANDS:
    serve     initiates a gRPC upload server (max 4MB per file)
@@ -58,12 +63,15 @@ export GODEBUG=x509ignoreCN=0
 ./build/gupload upload \
     --cacert ./cert/tls.crt \
     --infile main.go \
-    --label org1msp \
+    --public \
     --outfile main.go \
     --address localhost:1313
+
 ```
-The uploaded filename will be placed at /fileserver directory; its filename will be `org1msp--main.go`. Label can
-be used as organization identifier, or usages e.g. config files.
+If `public` flag is false, the uploaded filename will be placed at `fileserver` directory; its filename will be `main.go`. Or
+otherwise, the uploaded file will be sent to `fileserver/public` directory in the server.
+
+Note that `gupload` client is not able to download non-public files.
 
 The default address is `localhost:1313`.
 
@@ -73,7 +81,7 @@ Also, can use `--servername-override`, when TLS is enabled.
 ```shell script
 ./build/gupload download \
     --cacert ./cert/tls.crt \
-    --file image.png \
+    --file test.txt \
     --address localhost:1313
 ```
 

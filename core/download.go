@@ -2,6 +2,7 @@ package core
 
 import (
 	"errors"
+	"fmt"
 	"github.com/urfave/cli/v2"
 )
 
@@ -56,7 +57,7 @@ func downloadAction(c *cli.Context) (err error) {
 		RootCertificate:    rootCertificate,
 		ServerNameOverride: serverNameOverride,
 		Filename:           file,
-		Mspid:              "",
+		UsePublicFolder:    true,
 	})
 	must(err)
 	client = &grpcClient
@@ -65,5 +66,6 @@ func downloadAction(c *cli.Context) (err error) {
 	must(err)
 	defer client.Close()
 
+	fmt.Printf("\nsuccessfully downloaded: %s\n", file)
 	return
 }

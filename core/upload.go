@@ -33,9 +33,10 @@ var UploadCommand = cli.Command{
 			Name:  "outfile",
 			Usage: "output filename after upload",
 		},
-		&cli.StringFlag{
-			Name:  "label",
-			Usage: "add mspId in form of label, e.g. org1msp",
+		&cli.BoolFlag{
+			Name:  "public",
+			Usage: "send to public download folder",
+			Value: false,
 		},
 	},
 }
@@ -47,7 +48,7 @@ func uploadAction(c *cli.Context) (err error) {
 		rootCertificate    = c.String("cacert")
 		serverNameOverride = c.String("servername-override")
 		outfile            = c.String("outfile")
-		mspid              = c.String("label")
+		public             = c.Bool("public")
 		client             Client
 	)
 
@@ -63,17 +64,13 @@ func uploadAction(c *cli.Context) (err error) {
 		must(errors.New("cacert must be set"))
 	}
 
-	if mspid == "" {
-		must(errors.New("label must be set"))
-	}
-
 	grpcClient, err := NewClientGRPC(ClientGRPCConfig{
 		Address:            address,
 		RootCertificate:    rootCertificate,
 		Compress:           true,
 		ServerNameOverride: serverNameOverride,
 		Filename:           outfile,
-		Mspid:              mspid,
+		UsePublicFolder:    public,
 	})
 	must(err)
 	client = &grpcClient

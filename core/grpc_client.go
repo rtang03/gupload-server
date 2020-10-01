@@ -25,11 +25,11 @@ type Client interface {
 }
 
 type ClientGRPC struct {
-	conn      *grpc.ClientConn
-	client    GuploadServiceClient
-	chunkSize int
-	filename  string
-	mspid     string
+	conn            *grpc.ClientConn
+	client          GuploadServiceClient
+	chunkSize       int
+	filename        string
+	usePublicFolder bool
 }
 
 type ClientGRPCConfig struct {
@@ -38,7 +38,7 @@ type ClientGRPCConfig struct {
 	Compress           bool
 	ServerNameOverride string
 	Filename           string
-	Mspid              string
+	UsePublicFolder    bool
 }
 
 func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
@@ -48,7 +48,7 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 	)
 	// 4096 fixed
 	c.chunkSize = 1 << 12
-	c.mspid = cfg.Mspid
+	c.usePublicFolder = cfg.UsePublicFolder
 	c.filename = cfg.Filename
 
 	if cfg.Address == "" {
@@ -86,11 +86,12 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 
 func (c *ClientGRPC) UploadFile(ctx context.Context, f string) (stats Stats, err error) {
 	var (
-		writing = true
-		buf     []byte
-		n       int
-		file    *os.File
-		status  *UploadStatus
+		writing  = true
+		buf      []byte
+		n        int
+		file     *os.File
+		status   *UploadStatus
+		fileType string
 	)
 
 	fi, err := os.Stat(f)
@@ -122,11 +123,16 @@ func (c *ClientGRPC) UploadFile(ctx context.Context, f string) (stats Stats, err
 	stats.StartedAt = time.Now()
 
 	// file info
+	if c.usePublicFolder == true {
+		fileType = "public"
+	} else {
+		fileType = "private"
+	}
 	req := &Chunk{
 		Data: &Chunk_Info{
 			Info: &UploadFileInfo{
 				Filename: c.filename,
-				FileType: c.mspid,
+				FileType: fileType,
 			},
 		},
 	}
