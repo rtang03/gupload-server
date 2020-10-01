@@ -8,7 +8,7 @@ WORKDIR /workspace
 
 COPY . .
 
-RUN echo $VERSION > ./VERSION.txt && \
+RUN echo "VER -> $VERSION" && echo $VERSION > ./VERSION.txt && cat ./VERSION.txt && \
  CGO_ENABLED=0 GOOS=linux go build -v -i -o build/gupload main.go
 
 FROM alpine:3.12 AS final
