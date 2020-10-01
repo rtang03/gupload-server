@@ -101,13 +101,15 @@ func (s *ServerGRPC) Download(request *FileRequest, stream GuploadService_Downlo
 
 	fileInfo, err := os.Stat(path)
 	if err != nil {
-		return err
+		log.Println(err)
+		return logError(status.Errorf(codes.NotFound, "filepath is invalid"))
 	}
 	fileSize := fileInfo.Size()
 
 	f, err := os.Open(path)
 	if err != nil {
-		return err
+		log.Println(err)
+		return logError(status.Errorf(codes.Aborted, "cannot open file"))
 	}
 	defer f.Close()
 
@@ -122,7 +124,7 @@ func (s *ServerGRPC) Download(request *FileRequest, stream GuploadService_Downlo
 		}
 		bytesRead, err := f.Read(shard)
 		if err == io.EOF {
-			log.Print("download complete")
+			log.Println("download complete")
 			break
 		}
 		if err != nil {
@@ -135,6 +137,7 @@ func (s *ServerGRPC) Download(request *FileRequest, stream GuploadService_Downlo
 		}
 		totalBytesStreamed += int64(bytesRead)
 	}
+	log.Println("download complete: " + fileName)
 	return nil
 }
 
@@ -155,7 +158,7 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 
 		if err != nil {
 			if err == io.EOF {
-				log.Println("no more data")
+				log.Println("upload complete")
 				break
 			}
 
@@ -190,7 +193,7 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 		err = errors.Wrapf(err, "failed to send status code")
 		return
 	}
-	log.Printf("file saved: %s--%s", fileType, fileId)
+	log.Printf("file saved (%s) : %s", fileType, fileId)
 	return
 }
 
