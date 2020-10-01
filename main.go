@@ -16,11 +16,6 @@ import (
 )
 
 func main() {
-	//ver, err := ioutil.ReadFile("VERSION.txt")
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//version := string(ver)
 	app := &cli.App{
 		Name:    "gupload",
 		Version: "0.1.3",
