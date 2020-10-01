@@ -10,22 +10,20 @@ package main
 
 import (
 	"github.com/rtang03/grpc-server/core"
-	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
-	ver, err := ioutil.ReadFile("VERSION.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	version := string(ver)
+	//ver, err := ioutil.ReadFile("VERSION.txt")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//version := string(ver)
 	app := &cli.App{
 		Name:    "gupload",
-		Version: version,
+		Version: "0.1.3",
 		Usage:   "Upload and download files with grpcs",
 		Commands: []*cli.Command{
 			&core.ServeCommand,
