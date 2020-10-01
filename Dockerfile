@@ -19,7 +19,7 @@ VOLUME /var/gupload/fileserver/public /var/gupload/cert
 COPY --from=builder /workspace/build/gupload .
 COPY --from=builder /workspace/README.md .
 COPY --from=builder /workspace/cert ./cert
-RUN cat $VERSION > /worksapce/VERSION.txt
+RUN cat $VERSION > /workspace/VERSION.txt
 
 CMD ["sh", "-c", "./gupload serve --key ./cert/tls.key --certificate ./cert/tls.crt"]
 
