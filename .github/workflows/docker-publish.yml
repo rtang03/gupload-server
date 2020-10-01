@@ -32,9 +32,11 @@ jobs:
             docker-compose --file docker-compose.test.yml run sut
           else
             VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+            echo "1"
             echo $VERSION
             [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
             [ "$VERSION" == "$default-branch" ] && VERSION=latest
+            echo "2"
             echo $VERSION
             docker build --build-arg VERSION=$VERSION --file Dockerfile .
           fi
