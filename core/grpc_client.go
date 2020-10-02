@@ -198,7 +198,7 @@ func (c *ClientGRPC) DownloadFile(fileName string) (err error) {
 	for {
 		res, err := stream.Recv()
 		if err == io.EOF {
-			if err := ioutil.WriteFile(fileName, buffer.Bytes(), 0777); err != nil {
+			if err := ioutil.WriteFile(fileName, buffer.Bytes(), 0644); err != nil {
 				return err
 			}
 			break
