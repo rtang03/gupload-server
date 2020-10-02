@@ -116,3 +116,9 @@ git tag v0.0.2
 
 git push origin v0.0.2
 ```
+
+Manually release is currently used, need to update version number in `VERSION.txt`, and `main.go`. It needs to use the
+same version number above, as git tag number. The GitHub Action will use the tag number, to create and publish docker
+image to `gcr.io`.
+
+If later, there needs a richer functionality in gupload, I may consider to change to automatic release numbering.
