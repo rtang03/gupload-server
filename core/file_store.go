@@ -3,6 +3,7 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"sync"
 )
@@ -57,5 +58,33 @@ func (store *DiskStore) Save(fileId string, fileType string, binaryData bytes.Bu
 		Type:   fileType,
 		Path:   filePath,
 	}
+
+	// make an public/listing.txt
+	publicDir := fmt.Sprintf("%s/public", store.folder)
+	indexTxt := fmt.Sprintf("%s/public/index.txt", store.folder)
+
+	files, err := ioutil.ReadDir(publicDir)
+	if err != nil {
+		fmt.Println(err)
+		return fileId, nil
+	}
+
+	f, err := os.Create(indexTxt)
+	if err != nil {
+		fmt.Println(err)
+		f.Close()
+		return fileId, nil
+	}
+
+	for _, file := range files {
+		_, _ = fmt.Fprintln(f, file.Name())
+	}
+	err = f.Close()
+	if err != nil {
+		fmt.Println(err)
+		return fileId, nil
+	}
+	fmt.Println("index.txt created")
+
 	return fileId, nil
 }
