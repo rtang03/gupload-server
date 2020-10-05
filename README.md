@@ -62,9 +62,9 @@ export GODEBUG=x509ignoreCN=0
 # Upload a file: with mandatory fields
 ./build/gupload upload \
     --cacert ./cert/tls.crt \
-    --infile main.go \
+    --infile README.md \
     --public \
-    --outfile main.go \
+    --outfile README.md \
     --address localhost:1313
 
 ```
