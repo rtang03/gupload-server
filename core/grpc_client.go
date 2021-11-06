@@ -3,9 +3,11 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"google.golang.org/grpc/codes"
 	"io"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -21,6 +23,7 @@ import (
 type Client interface {
 	UploadFile(ctx context.Context, f string) (stats Stats, err error)
 	DownloadFile(f string) (err error)
+	Check(ctx context.Context, label string, counter int) (pingStats PingStats, err error)
 	Close()
 }
 
@@ -69,8 +72,12 @@ func NewClientGRPC(cfg ClientGRPCConfig) (c ClientGRPC, err error) {
 
 		grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(grpcCreds))
 	} else {
-		err = errors.Errorf("non-ssl operation is not suported")
-		return
+		// for use in health_check
+		grpcOpts = append(grpcOpts, grpc.WithInsecure())
+
+		// comment this, because non-ssl operation is guarded by CLI check. This check is reducdancy. Can remove it later when things go well
+		//err = errors.Errorf("non-ssl operation is not suported")
+		//return
 	}
 
 	c.conn, err = grpc.Dial(cfg.Address, grpcOpts...)
@@ -217,6 +224,46 @@ func (c *ClientGRPC) DownloadFile(fileName string) (err error) {
 	}
 
 	return nil
+}
+
+func (c *ClientGRPC) Check(ctx context.Context, label string, counter int) (pingStats PingStats, err error) {
+	var res *HealthCheckResponse
+	req := new(HealthCheckRequest)
+
+	pingStats.pingStartAt = time.Now()
+	req.PingAt = time.Now().UTC().String()
+	req.Label = label
+	req.Counter = strconv.Itoa(counter)
+
+	res, err = c.client.Check(ctx, req)
+
+	pingStats.pingFinishedAt = time.Now()
+
+	pingStats.ok = false
+
+	if err == nil {
+		pingStats.serverReceivedAt = res.GetReceivedAt()
+
+		if res.GetStatus() == HealthCheckResponse_SERVING {
+			pingStats.ok = true
+			return pingStats, nil
+		}
+		return pingStats, nil
+	}
+
+	switch grpc.Code(err) {
+	case
+		codes.Aborted,
+		codes.DataLoss,
+		codes.DeadlineExceeded,
+		codes.Internal,
+		codes.Unavailable:
+		// non-fatal errors
+	default:
+		return pingStats, err
+	}
+
+	return pingStats, err
 }
 
 func (c *ClientGRPC) Close() {

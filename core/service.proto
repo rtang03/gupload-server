@@ -5,6 +5,7 @@ option go_package = "github.com/rtang03/grpc-server/core";
 service GuploadService {
   rpc Upload(stream Chunk) returns (UploadStatus) {};
   rpc Download(FileRequest) returns (stream FileResponse) {};
+  rpc Check(HealthCheckRequest) returns(HealthCheckResponse) {};
 }
 
 message Chunk {
@@ -38,4 +39,21 @@ enum StatusCode {
 message UploadStatus {
   string Message = 1;
   StatusCode Code = 2;
+}
+
+message HealthCheckRequest {
+  string service = 1;
+  string pingAt = 2;
+  string label = 3;
+  string counter = 4;
+}
+
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+  }
+  ServingStatus status = 1;
+  string receivedAt = 2;
 }

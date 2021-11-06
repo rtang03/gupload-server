@@ -102,6 +102,8 @@ The tool is adapted from:
 - [example 2](https://medium.com/pantomath/how-we-use-grpc-to-build-a-client-server-system-in-go-dd20045fa1c2)
 - [publish to gh registry](https://github.com/actions/starter-workflows/blob/main/ci/docker-publish.yml)
 - [example 3](https://github.com/fuskovic/server-streaming)
+- [health check example](https://blog.wu-boy.com/2017/11/grpc-health-check-in-go/)
+- [health check code](https://github.com/go-training/grpc-health-check)
 
 ### Development
 ```shell script

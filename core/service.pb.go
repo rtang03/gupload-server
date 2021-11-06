@@ -78,6 +78,55 @@ func (StatusCode) EnumDescriptor() ([]byte, []int) {
 	return file_service_proto_rawDescGZIP(), []int{0}
 }
 
+type HealthCheckResponse_ServingStatus int32
+
+const (
+	HealthCheckResponse_UNKNOWN     HealthCheckResponse_ServingStatus = 0
+	HealthCheckResponse_SERVING     HealthCheckResponse_ServingStatus = 1
+	HealthCheckResponse_NOT_SERVING HealthCheckResponse_ServingStatus = 2
+)
+
+// Enum value maps for HealthCheckResponse_ServingStatus.
+var (
+	HealthCheckResponse_ServingStatus_name = map[int32]string{
+		0: "UNKNOWN",
+		1: "SERVING",
+		2: "NOT_SERVING",
+	}
+	HealthCheckResponse_ServingStatus_value = map[string]int32{
+		"UNKNOWN":     0,
+		"SERVING":     1,
+		"NOT_SERVING": 2,
+	}
+)
+
+func (x HealthCheckResponse_ServingStatus) Enum() *HealthCheckResponse_ServingStatus {
+	p := new(HealthCheckResponse_ServingStatus)
+	*p = x
+	return p
+}
+
+func (x HealthCheckResponse_ServingStatus) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (HealthCheckResponse_ServingStatus) Descriptor() protoreflect.EnumDescriptor {
+	return file_service_proto_enumTypes[1].Descriptor()
+}
+
+func (HealthCheckResponse_ServingStatus) Type() protoreflect.EnumType {
+	return &file_service_proto_enumTypes[1]
+}
+
+func (x HealthCheckResponse_ServingStatus) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use HealthCheckResponse_ServingStatus.Descriptor instead.
+func (HealthCheckResponse_ServingStatus) EnumDescriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{6, 0}
+}
+
 type Chunk struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -364,6 +413,132 @@ func (x *UploadStatus) GetCode() StatusCode {
 	return StatusCode_Unknown
 }
 
+type HealthCheckRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Service string `protobuf:"bytes,1,opt,name=service,proto3" json:"service,omitempty"`
+	PingAt  string `protobuf:"bytes,2,opt,name=pingAt,proto3" json:"pingAt,omitempty"`
+	Label   string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
+	Counter string `protobuf:"bytes,4,opt,name=counter,proto3" json:"counter,omitempty"`
+}
+
+func (x *HealthCheckRequest) Reset() {
+	*x = HealthCheckRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HealthCheckRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HealthCheckRequest) ProtoMessage() {}
+
+func (x *HealthCheckRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HealthCheckRequest.ProtoReflect.Descriptor instead.
+func (*HealthCheckRequest) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *HealthCheckRequest) GetService() string {
+	if x != nil {
+		return x.Service
+	}
+	return ""
+}
+
+func (x *HealthCheckRequest) GetPingAt() string {
+	if x != nil {
+		return x.PingAt
+	}
+	return ""
+}
+
+func (x *HealthCheckRequest) GetLabel() string {
+	if x != nil {
+		return x.Label
+	}
+	return ""
+}
+
+func (x *HealthCheckRequest) GetCounter() string {
+	if x != nil {
+		return x.Counter
+	}
+	return ""
+}
+
+type HealthCheckResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Status     HealthCheckResponse_ServingStatus `protobuf:"varint,1,opt,name=status,proto3,enum=HealthCheckResponse_ServingStatus" json:"status,omitempty"`
+	ReceivedAt string                            `protobuf:"bytes,2,opt,name=receivedAt,proto3" json:"receivedAt,omitempty"`
+}
+
+func (x *HealthCheckResponse) Reset() {
+	*x = HealthCheckResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HealthCheckResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HealthCheckResponse) ProtoMessage() {}
+
+func (x *HealthCheckResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HealthCheckResponse.ProtoReflect.Descriptor instead.
+func (*HealthCheckResponse) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *HealthCheckResponse) GetStatus() HealthCheckResponse_ServingStatus {
+	if x != nil {
+		return x.Status
+	}
+	return HealthCheckResponse_UNKNOWN
+}
+
+func (x *HealthCheckResponse) GetReceivedAt() string {
+	if x != nil {
+		return x.ReceivedAt
+	}
+	return ""
+}
+
 var File_service_proto protoreflect.FileDescriptor
 
 var file_service_proto_rawDesc = []byte{
@@ -387,19 +562,41 @@ var file_service_proto_rawDesc = []byte{
 	0x0a, 0x07, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x07, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x1f, 0x0a, 0x04, 0x43, 0x6f, 0x64, 0x65,
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0b, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43,
-	0x6f, 0x64, 0x65, 0x52, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x2a, 0x2d, 0x0a, 0x0a, 0x53, 0x74, 0x61,
-	0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x6e, 0x6b, 0x6e, 0x6f,
-	0x77, 0x6e, 0x10, 0x00, 0x12, 0x06, 0x0a, 0x02, 0x4f, 0x6b, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06,
-	0x46, 0x61, 0x69, 0x6c, 0x65, 0x64, 0x10, 0x02, 0x32, 0x62, 0x0a, 0x0e, 0x47, 0x75, 0x70, 0x6c,
-	0x6f, 0x61, 0x64, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x23, 0x0a, 0x06, 0x55, 0x70,
-	0x6c, 0x6f, 0x61, 0x64, 0x12, 0x06, 0x2e, 0x43, 0x68, 0x75, 0x6e, 0x6b, 0x1a, 0x0d, 0x2e, 0x55,
-	0x70, 0x6c, 0x6f, 0x61, 0x64, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x00, 0x28, 0x01, 0x12,
-	0x2b, 0x0a, 0x08, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x0c, 0x2e, 0x46, 0x69,
-	0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0d, 0x2e, 0x46, 0x69, 0x6c, 0x65,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x42, 0x25, 0x5a, 0x23,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x72, 0x74, 0x61, 0x6e, 0x67,
-	0x30, 0x33, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x63,
-	0x6f, 0x72, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x64, 0x65, 0x52, 0x04, 0x43, 0x6f, 0x64, 0x65, 0x22, 0x76, 0x0a, 0x12, 0x48, 0x65, 0x61,
+	0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x18, 0x0a, 0x07, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x69, 0x6e,
+	0x67, 0x41, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x69, 0x6e, 0x67, 0x41,
+	0x74, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x65,
+	0x72, 0x22, 0xad, 0x01, 0x0a, 0x13, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63,
+	0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3a, 0x0a, 0x06, 0x73, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x22, 0x2e, 0x48, 0x65, 0x61, 0x6c,
+	0x74, 0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e,
+	0x53, 0x65, 0x72, 0x76, 0x69, 0x6e, 0x67, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73,
+	0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x1e, 0x0a, 0x0a, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65,
+	0x64, 0x41, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x72, 0x65, 0x63, 0x65, 0x69,
+	0x76, 0x65, 0x64, 0x41, 0x74, 0x22, 0x3a, 0x0a, 0x0d, 0x53, 0x65, 0x72, 0x76, 0x69, 0x6e, 0x67,
+	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57,
+	0x4e, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x45, 0x52, 0x56, 0x49, 0x4e, 0x47, 0x10, 0x01,
+	0x12, 0x0f, 0x0a, 0x0b, 0x4e, 0x4f, 0x54, 0x5f, 0x53, 0x45, 0x52, 0x56, 0x49, 0x4e, 0x47, 0x10,
+	0x02, 0x2a, 0x2d, 0x0a, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x12,
+	0x0b, 0x0a, 0x07, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x10, 0x00, 0x12, 0x06, 0x0a, 0x02,
+	0x4f, 0x6b, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x46, 0x61, 0x69, 0x6c, 0x65, 0x64, 0x10, 0x02,
+	0x32, 0x98, 0x01, 0x0a, 0x0e, 0x47, 0x75, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x53, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x12, 0x23, 0x0a, 0x06, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x06, 0x2e,
+	0x43, 0x68, 0x75, 0x6e, 0x6b, 0x1a, 0x0d, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x53, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x22, 0x00, 0x28, 0x01, 0x12, 0x2b, 0x0a, 0x08, 0x44, 0x6f, 0x77, 0x6e,
+	0x6c, 0x6f, 0x61, 0x64, 0x12, 0x0c, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x0d, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x30, 0x01, 0x12, 0x34, 0x0a, 0x05, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x13,
+	0x2e, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63,
+	0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x25, 0x5a, 0x23, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x72, 0x74, 0x61, 0x6e, 0x67, 0x30,
+	0x33, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x63, 0x6f,
+	0x72, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -414,28 +611,34 @@ func file_service_proto_rawDescGZIP() []byte {
 	return file_service_proto_rawDescData
 }
 
-var file_service_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_service_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_service_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_service_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_service_proto_goTypes = []interface{}{
-	(StatusCode)(0),        // 0: StatusCode
-	(*Chunk)(nil),          // 1: Chunk
-	(*FileRequest)(nil),    // 2: FileRequest
-	(*FileResponse)(nil),   // 3: FileResponse
-	(*UploadFileInfo)(nil), // 4: UploadFileInfo
-	(*UploadStatus)(nil),   // 5: UploadStatus
+	(StatusCode)(0),                        // 0: StatusCode
+	(HealthCheckResponse_ServingStatus)(0), // 1: HealthCheckResponse.ServingStatus
+	(*Chunk)(nil),                          // 2: Chunk
+	(*FileRequest)(nil),                    // 3: FileRequest
+	(*FileResponse)(nil),                   // 4: FileResponse
+	(*UploadFileInfo)(nil),                 // 5: UploadFileInfo
+	(*UploadStatus)(nil),                   // 6: UploadStatus
+	(*HealthCheckRequest)(nil),             // 7: HealthCheckRequest
+	(*HealthCheckResponse)(nil),            // 8: HealthCheckResponse
 }
 var file_service_proto_depIdxs = []int32{
-	4, // 0: Chunk.info:type_name -> UploadFileInfo
+	5, // 0: Chunk.info:type_name -> UploadFileInfo
 	0, // 1: UploadStatus.Code:type_name -> StatusCode
-	1, // 2: GuploadService.Upload:input_type -> Chunk
-	2, // 3: GuploadService.Download:input_type -> FileRequest
-	5, // 4: GuploadService.Upload:output_type -> UploadStatus
-	3, // 5: GuploadService.Download:output_type -> FileResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	1, // 2: HealthCheckResponse.status:type_name -> HealthCheckResponse.ServingStatus
+	2, // 3: GuploadService.Upload:input_type -> Chunk
+	3, // 4: GuploadService.Download:input_type -> FileRequest
+	7, // 5: GuploadService.Check:input_type -> HealthCheckRequest
+	6, // 6: GuploadService.Upload:output_type -> UploadStatus
+	4, // 7: GuploadService.Download:output_type -> FileResponse
+	8, // 8: GuploadService.Check:output_type -> HealthCheckResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_service_proto_init() }
@@ -504,6 +707,30 @@ func file_service_proto_init() {
 				return nil
 			}
 		}
+		file_service_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HealthCheckRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HealthCheckResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_service_proto_msgTypes[0].OneofWrappers = []interface{}{
 		(*Chunk_Content)(nil),
@@ -514,8 +741,8 @@ func file_service_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_service_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   5,
+			NumEnums:      2,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -544,6 +771,7 @@ const _ = grpc.SupportPackageIsVersion6
 type GuploadServiceClient interface {
 	Upload(ctx context.Context, opts ...grpc.CallOption) (GuploadService_UploadClient, error)
 	Download(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (GuploadService_DownloadClient, error)
+	Check(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error)
 }
 
 type guploadServiceClient struct {
@@ -620,10 +848,20 @@ func (x *guploadServiceDownloadClient) Recv() (*FileResponse, error) {
 	return m, nil
 }
 
+func (c *guploadServiceClient) Check(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
+	out := new(HealthCheckResponse)
+	err := c.cc.Invoke(ctx, "/GuploadService/Check", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GuploadServiceServer is the server API for GuploadService service.
 type GuploadServiceServer interface {
 	Upload(GuploadService_UploadServer) error
 	Download(*FileRequest, GuploadService_DownloadServer) error
+	Check(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error)
 }
 
 // UnimplementedGuploadServiceServer can be embedded to have forward compatible implementations.
@@ -635,6 +873,9 @@ func (*UnimplementedGuploadServiceServer) Upload(GuploadService_UploadServer) er
 }
 func (*UnimplementedGuploadServiceServer) Download(*FileRequest, GuploadService_DownloadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Download not implemented")
+}
+func (*UnimplementedGuploadServiceServer) Check(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Check not implemented")
 }
 
 func RegisterGuploadServiceServer(s *grpc.Server, srv GuploadServiceServer) {
@@ -688,10 +929,33 @@ func (x *guploadServiceDownloadServer) Send(m *FileResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _GuploadService_Check_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HealthCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GuploadServiceServer).Check(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/GuploadService/Check",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GuploadServiceServer).Check(ctx, req.(*HealthCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _GuploadService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "GuploadService",
 	HandlerType: (*GuploadServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Check",
+			Handler:    _GuploadService_Check_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "Upload",

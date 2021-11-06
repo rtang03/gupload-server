@@ -18,12 +18,13 @@ import (
 func main() {
 	app := &cli.App{
 		Name:    "gupload",
-		Version: "0.1.6",
-		Usage:   "Upload and download files with grpcs",
+		Version: "0.1.8",
+		Usage:   "Upload and download files with grpcs / grpc health check",
 		Commands: []*cli.Command{
 			&core.ServeCommand,
 			&core.UploadCommand,
 			&core.DownloadCommand,
+			&core.HealthCheckCommand,
 		},
 	}
 

@@ -3,6 +3,7 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"io"
@@ -11,6 +12,8 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"sync"
+	"time"
 
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -38,6 +41,9 @@ type ServerGRPC struct {
 	port        int
 	certificate string
 	key         string
+	mu          sync.Mutex
+	// statusMap stores the serving status of the services this Server monitors.
+	statusMap map[string]HealthCheckResponse_ServingStatus
 }
 
 type ServerGRPCConfig struct {
@@ -57,6 +63,10 @@ func NewServerGRPC(cfg ServerGRPCConfig, fileStore FileStore) (s ServerGRPC, err
 	s.certificate = cfg.Certificate
 	s.key = cfg.Key
 	s.fileStore = fileStore
+
+	// healthcheck
+	s.statusMap = make(map[string]HealthCheckResponse_ServingStatus)
+
 	return
 }
 
@@ -195,6 +205,29 @@ func (s *ServerGRPC) Upload(stream GuploadService_UploadServer) (err error) {
 	}
 	log.Printf("file saved (%s) : %s", fileType, fileId)
 	return
+}
+
+func (s *ServerGRPC) Check(ctx context.Context, in *HealthCheckRequest) (*HealthCheckResponse, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	log.Printf("label:%s-%s ping at %s\n", in.Label, in.Counter, in.PingAt)
+
+	if in.Service == "" {
+		// check the server overall health status.
+		return &HealthCheckResponse{
+			Status:     HealthCheckResponse_SERVING,
+			ReceivedAt: time.Now().UTC().String(),
+		}, nil
+	}
+
+	if healthStatus, ok := s.statusMap[in.Service]; ok {
+		return &HealthCheckResponse{
+			Status:     healthStatus,
+			ReceivedAt: time.Now().UTC().String(),
+		}, nil
+	}
+	return nil, status.Error(codes.NotFound, "unknown service")
 }
 
 func (s *ServerGRPC) Close() {
