@@ -77,7 +77,7 @@ func healtCheckAction(c *cli.Context) (err error) {
 		if !stats.ok || err != nil {
 			log.Printf("can't connect grpc server: %v, code: %v\n", err, grpc.Code(err))
 		} else {
-			log.Printf("ping duration (ms) %d; reach server %s\n", stats.pingFinishedAt.Sub(stats.pingStartAt).Milliseconds(), stats.serverReceivedAt)
+			log.Printf("label:%s-%d duration (ms) %d; --> %s\n", label, counter, stats.pingFinishedAt.Sub(stats.pingStartAt).Milliseconds(), stats.serverReceivedAt)
 		}
 		<-time.After(duration)
 	}
