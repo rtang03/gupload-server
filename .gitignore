@@ -14,8 +14,9 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 .idea/
+cert/
+!cert/tls.crt
+!cert/tls.key
 build/gupload
-cert/p0o1.crt
-cert/nginx.crt
 # for testing
 fileserver/public/image.png

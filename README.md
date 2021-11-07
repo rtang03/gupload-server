@@ -124,3 +124,26 @@ same version number above, as git tag number. The GitHub Action will use the tag
 image to `gcr.io`.
 
 If later, there needs a richer functionality in gupload, I may consider to change to automatic release numbering.
+
+### New Health check
+Secure
+```shell
+# secure server
+./build/gupload serve --key ./cert/tls.key --certificate ./cert/tls.crt
+
+./build/gupload serve --key ./cert/tlskey-peer0-bochk.pem --certificate ./cert/tlscert-peer0-bochk.pem
+
+# secure client
+./build/gupload ping --address localhost:1313 --cacert ./cert/tls.crt
+
+./build/gupload ping --address peer0-bochk:1313 --cacert ./cert/tlscert-peer0-bochk.pem
+```
+
+Insecure
+```shell
+# server
+./build/gupload serve
+
+# client
+./build/gupload ping --address localhost:1313
+```
