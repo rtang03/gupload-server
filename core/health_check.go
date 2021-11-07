@@ -31,11 +31,11 @@ var HealthCheckCommand = cli.Command{
 		},
 		&cli.StringFlag{
 			Name:  "cacert",
-			Usage: "Deprecated. path of a certifcate to add to the root CAs",
+			Usage: "path of a certifcate to add to the root CAs",
 		},
 		&cli.StringFlag{
 			Name:  "servername-override",
-			Usage: "Deprecated. use serverNameOverride for tls ca cert",
+			Usage: "use serverNameOverride for tls ca cert",
 		},
 	},
 }
@@ -44,6 +44,7 @@ func healtCheckAction(c *cli.Context) (err error) {
 	var (
 		address            = c.String("address")
 		label              = c.String("label")
+		rootCertificate    = c.String("cacert")
 		serverNameOverride = c.String("servername-override")
 		interval           = c.String("interval")
 		client             Client
@@ -60,7 +61,7 @@ func healtCheckAction(c *cli.Context) (err error) {
 
 	grpcClient, err := NewClientGRPC(ClientGRPCConfig{
 		Address:            address,
-		RootCertificate:    "",
+		RootCertificate:    rootCertificate,
 		Compress:           true,
 		ServerNameOverride: serverNameOverride,
 	})

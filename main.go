@@ -18,7 +18,7 @@ import (
 func main() {
 	app := &cli.App{
 		Name:    "gupload",
-		Version: "0.1.9",
+		Version: "0.1.10",
 		Usage:   "Upload and download files with grpcs / grpc health check",
 		Commands: []*cli.Command{
 			&core.ServeCommand,
